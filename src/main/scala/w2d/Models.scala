@@ -12,6 +12,8 @@ case class Rect(origin: Vector2, size: Vector2) {
 
 }
 
+// size.x : width
+// size.y : height
 class Container(parent: Container, children: Seq[Container], origin: Vector2, size: Vector2, padding: Vector4)
 
 class GridContainer(parent: Container, children: Seq[Container], origin: Vector2, size: Vector2, padding: Vector4)
