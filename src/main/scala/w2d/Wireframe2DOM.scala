@@ -46,4 +46,5 @@ object Wireframe2DOM extends App {
     println(sectionizeRow(rects))
     null
   }
+
 }
