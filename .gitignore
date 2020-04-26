@@ -2,3 +2,7 @@
 project/*
 target/*
 .bloop/*
+document/*
+!document/paper.tex
+!document/llncs.cls
+!document/paper.pdf

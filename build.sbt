@@ -2,7 +2,7 @@ name := "Wireframe2DOM"
 
 version := "0.1"
 
-scalaVersion := "2.13.2"
+scalaVersion := "2.13.1"
 
 // Add dependency on ScalaFX library
 libraryDependencies += "org.scalafx" %% "scalafx" % "12.0.2-R18"
