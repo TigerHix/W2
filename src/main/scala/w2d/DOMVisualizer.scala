@@ -5,7 +5,7 @@ import scalafx.application.JFXApp.PrimaryStage
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.layout.Pane
-import scalafx.scene.shape.Rectangle
+import scalafx.scene.shape.{Line, Rectangle}
 
 class DOMVisualizer(rootContainer: Container, stageWidth: Int, stageHeight: Int) extends JFXApp {
   stage = new PrimaryStage {
@@ -13,7 +13,11 @@ class DOMVisualizer(rootContainer: Container, stageWidth: Int, stageHeight: Int)
     scene = new Scene {
       root = new Pane {
         padding = Insets(0)
-        children = DOMVisualizer.toRectangles(rootContainer) :+ {
+        children = DOMVisualizer.toRectangles(rootContainer, withBorderOnly = true).flatMap { rectangle =>
+          val diagonal1 = Line(rectangle.x.value, rectangle.y.value, rectangle.x.value + rectangle.width.value, rectangle.y.value + rectangle.height.value)
+          val diagonal2 = Line(rectangle.x.value + rectangle.width.value, rectangle.y.value, rectangle.x.value, rectangle.y.value + rectangle.height.value)
+          Seq(rectangle, diagonal1, diagonal2)
+        } :+ {
           val root = Rectangle(0, 0, stageWidth, stageHeight)
           root.style = "-fx-fill: transparent; -fx-stroke: red; -fx-stroke-width: 1;"
           root

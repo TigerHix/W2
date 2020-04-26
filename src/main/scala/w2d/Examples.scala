@@ -3,50 +3,37 @@ package w2d
 import scalafx.scene.paint.Color
 
 object Examples {
-  def Basic(): Unit = {
-    Wireframe2DOM.synthesize(
-      Seq(
-        Rect(Vector2(20, 20), Vector2(760, 120)),
-        Rect(Vector2(20, 160), Vector2(184, 184)),
-        Rect(Vector2(20 + 184 + 8, 160), Vector2(184, 184)),
-        Rect(Vector2(20 + 184 + 8 + 184 + 8, 160), Vector2(184, 184)),
-        Rect(Vector2(20 + 184 + 8 + 184 + 8 + 184 + 8, 160), Vector2(184, 184)),
-        Rect(Vector2(20, 370), Vector2(760, 200)),
-      ),
-      800,
-      600
-    )
-  }
+  def ComplexLayout(): Seq[Rect] = Seq(
+    Rect(Vector2(20, 10), Vector2(160, 30)),
+    Rect(Vector2(220, 10), Vector2(260, 30)),
+    Rect(Vector2(520, 10), Vector2(260, 30)),
+    Rect(Vector2(0, 50), Vector2(800, 140)),
+    Rect(Vector2(200, 220), Vector2(400, 20)),
+    Rect(Vector2(105, 265), Vector2(140, 145)),
+    Rect(Vector2(105, 415), Vector2(140, 20)),
+    Rect(Vector2(255, 265), Vector2(140, 145)),
+    Rect(Vector2(255, 415), Vector2(140, 20)),
+    Rect(Vector2(405, 265), Vector2(140, 145)),
+    Rect(Vector2(405, 415), Vector2(140, 20)),
+    Rect(Vector2(555, 265), Vector2(140, 145)),
+    Rect(Vector2(555, 415), Vector2(140, 20)),
+    Rect(Vector2(105, 445), Vector2(140, 145)),
+    Rect(Vector2(105, 595), Vector2(140, 20)),
+    Rect(Vector2(255, 445), Vector2(140, 145)),
+    Rect(Vector2(255, 595), Vector2(140, 20)),
+    Rect(Vector2(10, 650), Vector2(780, 30)),
+    Rect(Vector2(50, 700), Vector2(160, 160)),
+    Rect(Vector2(230, 700), Vector2(160, 160)),
+    Rect(Vector2(410, 700), Vector2(160, 160)),
+    Rect(Vector2(590, 700), Vector2(160, 160)),
+    Rect(Vector2(30, 880), Vector2(440, 100)),
+    Rect(Vector2(490, 890), Vector2(80, 80)),
+    Rect(Vector2(590, 890), Vector2(80, 80)),
+    Rect(Vector2(690, 890), Vector2(80, 80)),
+  )
 
   def WireframeVisualizerTest(): Unit = {
-    new WireframeVisualizer(Seq(
-      Rect(Vector2(20, 10), Vector2(160, 30)),
-      Rect(Vector2(220, 10), Vector2(260, 30)),
-      Rect(Vector2(520, 10), Vector2(260, 30)),
-      Rect(Vector2(0, 50), Vector2(800, 140)),
-      Rect(Vector2(200, 220), Vector2(400, 20)),
-      Rect(Vector2(105, 265), Vector2(140, 145)),
-      Rect(Vector2(105, 415), Vector2(140, 20)),
-      Rect(Vector2(255, 265), Vector2(140, 145)),
-      Rect(Vector2(255, 415), Vector2(140, 20)),
-      Rect(Vector2(405, 265), Vector2(140, 145)),
-      Rect(Vector2(405, 415), Vector2(140, 20)),
-      Rect(Vector2(555, 265), Vector2(140, 145)),
-      Rect(Vector2(555, 415), Vector2(140, 20)),
-      Rect(Vector2(105, 445), Vector2(140, 145)),
-      Rect(Vector2(105, 595), Vector2(140, 20)),
-      Rect(Vector2(255, 445), Vector2(140, 145)),
-      Rect(Vector2(255, 595), Vector2(140, 20)),
-      Rect(Vector2(10, 650), Vector2(780, 30)),
-      Rect(Vector2(50, 700), Vector2(160, 160)),
-      Rect(Vector2(230, 700), Vector2(160, 160)),
-      Rect(Vector2(410, 700), Vector2(160, 160)),
-      Rect(Vector2(590, 700), Vector2(160, 160)),
-      Rect(Vector2(30, 880), Vector2(440, 100)),
-      Rect(Vector2(490, 890), Vector2(80, 80)),
-      Rect(Vector2(590, 890), Vector2(80, 80)),
-      Rect(Vector2(690, 890), Vector2(80, 80)),
-    ), 800, 1000).main(Array())
+    new WireframeVisualizer(ComplexLayout(), 800, 1000).main(Array())
   }
 
   def DOMVisualizerTest(): Unit = {

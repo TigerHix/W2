@@ -2,6 +2,7 @@ package w2d
 
 object Wireframe2DOM extends App {
   Examples.DOMVisualizerTest()
+  synthesize(Examples.ComplexLayout(), 800, 1200)
 
   def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
   def rectLowerX(rect: Rect): Int = {rect.origin.y + rect.size.y}
@@ -12,11 +13,11 @@ object Wireframe2DOM extends App {
   def sectionize(rects: Seq[Rect], rectLowerXY: Rect => Int, rectXY: Rect => Int): Seq[Seq[Rect]] = {
     val rectSortedByEnd = rects.sortWith(rectLowerXY(_) < rectLowerXY(_))
     // sort the rects' lower y and obtain all distinct values
-    val rectSorted = (rectSortedByEnd map {case rect => rectLowerXY(rect)}).toSet.toSeq.sortWith(_ < _)
-    val rectRange = rectSortedByEnd map {case rect => rectXY(rect) until rectLowerXY(rect)}
-    val clearRect = rectSorted filter {case row => (rectRange filter {case range => range.contains(row)}).length == 0}
+    val rectSorted = (rectSortedByEnd map (rect => rectLowerXY(rect))).distinct.sortWith(_ < _)
+    val rectRange = rectSortedByEnd map (rect => rectXY(rect) until rectLowerXY(rect))
+    val clearRect = rectSorted filter (row => (rectRange filter (range => range.contains(row))).length == 0)
     var addedUntil = 0
-    val cut : Map[Int, Seq[Rect]] = (clearRect map {case row =>
+    val cut : Map[Int, Seq[Rect]] = (clearRect map { row =>
       row -> {
         var rectSeq = Seq[Rect]()
         var counter = addedUntil
@@ -42,8 +43,10 @@ object Wireframe2DOM extends App {
 
   def synthesize(rects: Seq[Rect], width: Int, height: Int): Container = {
     //new WireframeVisualizer(rects, width, height).main(Array())
-    println(sectionizeCol(rects))
-    println(sectionizeRow(rects))
+    print("Sectionize col\n")
+    sectionizeCol(rects) foreach println
+    print("Sectionize row\n")
+    sectionizeRow(rects) foreach println
     null
   }
 
