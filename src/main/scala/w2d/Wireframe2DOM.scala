@@ -3,32 +3,47 @@ package w2d
 object Wireframe2DOM extends App {
   Examples.Basic1()
 
-  def synthesize(rects: Seq[Rect], width: Int, height: Int): Container = {
-    def rectLowerY(rect: Rect):Int = {
-      rect.origin.y + rect.size.y
-    }
-    //new WireframeVisualizer(rects, width, height).main(Array())
-    val rectSortedByRow = rects.sortWith(rectLowerY(_) < rectLowerY(_))
-    val rectNumber = rects.length
+  def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
+  def rectLowerX(rect: Rect): Int = {rect.origin.y + rect.size.y}
+
+  def rectX(rect: Rect): Int = {rect.origin.x}
+  def rectY(rect: Rect): Int = {rect.origin.y}
+
+  def sectionize(rects: Seq[Rect], rectLowerXY: Rect => Int, rectXY: Rect => Int): Seq[Seq[Rect]] = {
+    val rectSortedByEnd = rects.sortWith(rectLowerXY(_) < rectLowerXY(_))
     // sort the rects' lower y and obtain all distinct values
-    val rowSorted = (rectSortedByRow map {case rect => rectLowerY(rect)}).toSet.toSeq.sortWith(_ < _)
-    val rectYRange = rectSortedByRow map {case rect => rect.origin.y until rectLowerY(rect)}
-    val clearRow = rowSorted filter {case row => (rectYRange filter {case range => range.contains(row)}).length == 0}
+    val rectSorted = (rectSortedByEnd map {case rect => rectLowerXY(rect)}).toSet.toSeq.sortWith(_ < _)
+    val rectRange = rectSortedByEnd map {case rect => rectXY(rect) until rectLowerXY(rect)}
+    val clearRect = rectSorted filter {case row => (rectRange filter {case range => range.contains(row)}).length == 0}
     var addedUntil = 0
-    val firstCutByRow : Map[Int, Seq[Rect]] = (clearRow map {case row => 
+    val cut : Map[Int, Seq[Rect]] = (clearRect map {case row => 
       row -> {
         var rectSeq = Seq[Rect]()
         var counter = addedUntil
-        while (counter < rectNumber && rectLowerY(rectSortedByRow(counter)) <= row) {
-          rectSeq = rectSeq :+ rectSortedByRow(counter)
+        while (counter < rects.length && rectLowerXY(rectSortedByEnd(counter)) <= row) {
+          rectSeq = rectSeq :+ rectSortedByEnd(counter)
           counter += 1
         }
         addedUntil = counter
         rectSeq
       }
     }).toMap
-    println(firstCutByRow)
+    
+    cut.toSeq.sortBy(_._1) map {case (_, section) => section}
+  }
 
+  def sectionizeRow(rects : Seq[Rect]): Seq[Seq[Rect]] = {
+    sectionize(rects, rectLowerY, rectY)
+  }
+
+  def sectionizeCol(rects : Seq[Rect]): Seq[Seq[Rect]] = {
+    sectionize(rects, rectLowerX, rectX)
+  }
+
+  def synthesize(rects: Seq[Rect], width: Int, height: Int): Container = {
+    //new WireframeVisualizer(rects, width, height).main(Array())
+    println(sectionizeCol(rects))
+    println(sectionizeRow(rects))
     null
   }
   
