@@ -5,6 +5,7 @@ import scalafx.scene.paint.{Color, Paint}
 case class Vector2(x: Int, y: Int) {
   def +(other: Vector2): Vector2 = Vector2(x + other.x, y + other.y)
   def -(other: Vector2): Vector2 = Vector2(x - other.x, y - other.y)
+  def ==(other: Vector2): Boolean = (x == other.x) && (y == other.y)
 }
 
 object Vector2 {
@@ -33,12 +34,17 @@ class Container {
 
   // For DOMVisualizer use only
   var origin: Vector2 = Vector2.Zero
+  def toString(depth: Int = 0): String = {
+    val thisStr = "\t" * depth + this.getClass().toString() + "(Size=(" +size.x + ","+size.y +") margin=("+margin.top + ","+margin.right + "," + margin.bottom  + "," +margin.left+"))\n"
+    (thisStr +:(children map {case child => child.toString(depth + 1)})).mkString("")
+  }
 }
 
 class HVContainer extends Container {
   var horizontal = true
   def isHorizontal: Boolean = horizontal
   def isVertical: Boolean = !isHorizontal
+  
 }
 
 class GridContainer extends Container {
