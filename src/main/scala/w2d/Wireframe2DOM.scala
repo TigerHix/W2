@@ -64,7 +64,7 @@ object Wireframe2DOM extends App {
   // recursively synthesis a section horizationly or vertically
   // if row is true, the synthesis is conducted vertically
   def synthesizeHV(rects: Seq[Rect], width: Int, height: Int,x: Int = 0, y: Int = 0, depth: Int = 0, row: Boolean = true): Container = {
-    println(rects)
+    //println(rects)
     if (rects.length == 0) {
       null
     } else if (depth > depthLimit) {
@@ -245,11 +245,10 @@ object Wireframe2DOM extends App {
               val gridY = if (row) sectionAnchors(index) else y
               gridList = gridList :+ ((index, generateGrid(index, upToSize, dist, gridX, gridY)))
               // TODO add fail case
-              i = upToSize + 1
+              i = i + upToSize - index + 1
             } 
           }
         }
-
         // TODO increase i
         if (!success) {
           addedToGrid(i) = true
@@ -257,7 +256,6 @@ object Wireframe2DOM extends App {
           i = i + 1
         }
       }
-      
       val complexSections = (unsuccessfulGrid ++ complexStructure ++ complexStrip) map {case (index, section) => {
         val sectionX = if (row) x else sectionAnchors(index)
         val sectionY = if (row) sectionAnchors(index) else y
@@ -269,7 +267,6 @@ object Wireframe2DOM extends App {
       childrenList = ((complexSections ++ gridList) sortWith {case ((index1, _), (index2, _)) => index1 < index2}) map {case (_, sect) => sect}
 
       val res = if(childrenList.length == 1) childrenList.head else hvdiv(width, height, white, false, 0, 0, 0, 0)(childrenList)
-      println(res.toString(0))
       res
       
     }
