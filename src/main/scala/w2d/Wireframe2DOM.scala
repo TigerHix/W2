@@ -74,7 +74,7 @@ object Wireframe2DOM extends App {
     } else if (rects.length == 1) {
       val rect = rects.head
       val childrenDiv = div(rect.size.x, rect.size.y)
-      vdiv(rect.size.x, rect.size.y, top = rect.origin.y - y, left = rect.origin.x - x)(childrenDiv)
+      vdiv(rect.size.x, rect.size.y, top = rect.origin.y - y, left = rect.origin.x - x, border = false)(childrenDiv)
     }
     else {
       val sectionizeHV = if (row) sectionizeRow _ else sectionizeCol _
