@@ -131,10 +131,11 @@ object Wireframe2DOM extends App {
         val sectionX = if (row) x else sectionAnchors(start)
         val sectionY = if (row) sectionAnchors(start) else y
         val firstOrigin = possibleGridSectMap(start).head.origin
+        val lastRect = possibleGridSectMap(start).last
         val (gridX, gridY) = (firstOrigin.x, firstOrigin.y)
         val (leftMargin, topMargin) = (gridX - x, gridY - y)
-        val sectionWidth = if (row) width else sectionLowers(end) - sectionX
-        val sectionHeight = if (row) sectionLowers(end) - sectionY else height
+        val sectionWidth = if (row) lastRect.origin.x + lastRect.size.x - gridX  else sectionLowers(end) - sectionX
+        val sectionHeight = if (row) sectionLowers(end) - sectionY else lastRect.origin.y + lastRect.size.y - gridY
         var cellList = Seq[Container]()
         var processed = start
         var (gridWidth, gridHeight) = (0, 0)
