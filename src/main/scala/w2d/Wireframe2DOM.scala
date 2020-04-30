@@ -8,8 +8,13 @@ object Wireframe2DOM extends App {
   //Examples.DOMVisualizerTest()
   val depthLimit: Int = 5;
   val white = Color.White
+  var synthesized = synthesize(Examples.ComplexLayout(), 800, 1200)
 
-  new DOMVisualizer(synthesize(Examples.ComplexLayout(), 800, 1200), 800, 1200).main(Array())
+  new DOMVisualizer(synthesized, 800, 1200)//.main(Array())
+
+  val html = toHtml(synthesized, 800, 1200)
+  println(html)
+  Files.write(Paths.get("result.html"), html.getBytes(StandardCharsets.UTF_8))
 
   def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
   def rectLowerX(rect: Rect): Int = {rect.origin.x + rect.size.x}
@@ -74,7 +79,7 @@ object Wireframe2DOM extends App {
     } else if (rects.length == 1) {
       val rect = rects.head
       val childrenDiv = div(rect.size.x, rect.size.y)
-      vdiv(rect.size.x, rect.size.y, top = rect.origin.y - y, left = rect.origin.x - x, border = false)(childrenDiv)
+      hdiv(rect.size.x, rect.size.y, top = rect.origin.y - y, left = rect.origin.x - x, border = false)(childrenDiv)
     }
     else {
       val sectionizeHV = if (row) sectionizeRow _ else sectionizeCol _
@@ -319,33 +324,73 @@ object Wireframe2DOM extends App {
 //    }
     println("=== Result ===")
     println(res.toString(0))
-    val html = "<html>\n<body>\n" + toHtml(res)(1) + "\n</body>\n</html>"
-    println(html)
-    Files.write(Paths.get("result.html"), html.getBytes(StandardCharsets.UTF_8))
     res
   }
 
-  def toHtml(container: Container)(implicit tabs: Int = 0): String = {
-    var style = ""
-    style += s"width: ${container.size.x}px; "
-    style += s"height: ${container.size.y}px; "
-    style += s"margin: ${container.margin.top}px ${container.margin.right}px ${container.margin.bottom}px ${container.margin.left}px; "
-    if (container.border) style += s"border: 2px solid black; "
-    container.parent match {
-      case hvContainer: HVContainer =>
-        if (hvContainer.isHorizontal) {
-          style += "display: inline-block; "
-        }
-      case gridContainer: GridContainer =>
+  def toHtml(container: Container, stageWidth: Int, stageHeight: Int): String = {
+    val style = s"max-width: ${stageWidth}px; margin: 0 auto; "
+    "<html>\n<body style=\"" + style + "\">\n" + toDiv(synthesized)(800, 1200, 1) + "\n</body>\n</html>"
+  }
 
+  def toDiv(container: Container)(implicit stageWidth: Int, stageHeight: Int, tabs: Int = 0): String = {
+    var style = ""
+    var aux = false
+    var auxStyle = ""
+
+    container match {
+      case hvContainer: HVContainer =>
+        style += "display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;"
+        if (hvContainer.children.isEmpty) style += s"height: ${container.size.y}px; "
+        else style += s"height: auto; "
+      case gridContainer: GridContainer =>
+        style += s"height: auto;"
+        aux = true
+        auxStyle += "display: grid; grid-template-columns: repeat(auto-fit, " + gridContainer.children.head.size.x + "px); justify-content: center; grid-gap: " + gridContainer.children.head.margin.bottom +"px " + gridContainer.children.head.margin.right + "px;"
+        // container.size = Vector2(gridContainer.minWidth, container.size.y)
+        // Copy left margin to right margin TODO: Not
+        // container.margin = Vector4(container.margin.top, container.margin.left, container.margin.bottom, container.margin.left)
       case _ =>
     }
 
-    "\t".repeat(tabs) + "<div style=\"" + style + "\">\n" +
-      container.children.map(it => toHtml(it)(tabs + 1)).mkString("\n") +
-      "\t".repeat(tabs) + "</div>\n"
-  }
+    container.parent match {
+      case hvContainer: HVContainer =>
+        style += s"max-width: ${container.size.x}px; width: 100%; "
+      case gridContainer: GridContainer =>
+        if (container == gridContainer.children.last) {
+          // Remove right margin
+          //container.margin = Vector4(container.margin.top, 0, container.margin.bottom, container.margin.left)
+        }
+        style += s"width: ${container.size.x}px; "
+        style += s"height: ${container.size.y}px; " // Override
+      case _ =>
+    }
 
-  // TODO generate divs
+    container match {
+      case hvContainer: HVContainer =>
+        if (hvContainer.children.size == 1) {
+          style += s"margin: ${container.margin.top}px auto ${container.margin.bottom}px auto; "
+        } else {
+          style += s"margin: ${container.margin.top}px ${container.margin.right * 100.0 / stageWidth}% ${container.margin.bottom}px ${container.margin.left * 100.0 / stageWidth}%; "
+        }
+      case gridContainer: GridContainer =>
+        style += s"margin: ${container.margin.top}px auto ${container.margin.bottom}px auto; "
+    }
+    // style += s"margin: ${container.margin.top}px ${container.margin.right}px ${container.margin.bottom}px ${container.margin.left}px; "
+    if (container.border) style += s"outline: 2px solid black; outline-offset: -2px;"
+
+    "\t".repeat(tabs) + "<div class=\"" + { container.getClass.getSimpleName } + "\" style=\"" + style + "\">\n" + {
+      if (aux)
+        "\n" + "\t".repeat(tabs + 1) + "<div style=\"" + auxStyle + "\">\n"
+      else
+        ""
+    } +
+      container.children.map(it => toDiv(it)(stageWidth, stageHeight, tabs + (if (aux) 2 else 1))).mkString("\n") + {
+      if (aux)
+        "\n" + "\t".repeat(tabs + 1) + "</div>\n"
+      else
+        ""
+    } +
+    "\t".repeat(tabs) + "</div>\n"
+  }
 
 }

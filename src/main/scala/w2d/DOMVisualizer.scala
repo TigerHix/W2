@@ -13,13 +13,15 @@ class DOMVisualizer(rootContainer: Container, stageWidth: Int, stageHeight: Int)
     scene = new Scene {
       root = new Pane {
         padding = Insets(0)
-        children = DOMVisualizer.toRectangles(rootContainer, withBorderOnly = true).flatMap { rectangle =>
-          val diagonal1 = Line(rectangle.x.value, rectangle.y.value, rectangle.x.value + rectangle.width.value, rectangle.y.value + rectangle.height.value)
-          val diagonal2 = Line(rectangle.x.value + rectangle.width.value, rectangle.y.value, rectangle.x.value, rectangle.y.value + rectangle.height.value)
-          Seq(rectangle, diagonal1, diagonal2)
+        children = DOMVisualizer.toRectangles(rootContainer).flatMap { rectangle =>
+          if (rectangle.userData == "div") {
+            val diagonal1 = Line(rectangle.x.value, rectangle.y.value, rectangle.x.value + rectangle.width.value, rectangle.y.value + rectangle.height.value)
+            val diagonal2 = Line(rectangle.x.value + rectangle.width.value, rectangle.y.value, rectangle.x.value, rectangle.y.value + rectangle.height.value)
+            Seq(rectangle, diagonal1, diagonal2)
+          } else Seq(rectangle)
         } :+ {
           val root = Rectangle(0, 0, stageWidth, stageHeight)
-          root.style = "-fx-fill: transparent; -fx-stroke: red; -fx-stroke-width: 1;"
+          root.style = "-fx-fill: transparent; -fx-stroke: black; -fx-stroke-width: 1;"
           root
         }
     }
@@ -30,15 +32,33 @@ class DOMVisualizer(rootContainer: Container, stageWidth: Int, stageHeight: Int)
 }
 
 object DOMVisualizer {
-  def toRectangles(container: Container, withBorderOnly: Boolean = false): Seq[Rectangle] = {
+  def toRectangles(container: Container, withBorderOnly: Boolean = false, depth: Int = 0): Seq[Rectangle] = {
     calculateAbsoluteOrigin(container)
 
-    val rectangle = Rectangle(container.origin.x, container.origin.y, container.size.x, container.size.y)
-    if (container.border) rectangle.style = "-fx-stroke: black; -fx-stroke-width: 1;"
-    else rectangle.style = "-fx-stroke-width: 0;"
+    var trueWidth = container.size.x
+    container match {
+      case gridContainer: GridContainer =>
+        trueWidth = gridContainer.minWidth
+      case _ =>
+    }
+
+    val rectangle = Rectangle(container.origin.x, container.origin.y, trueWidth, container.size.y)
+
+    rectangle.style = "-fx-stroke: " + {
+      container match {
+        case div: HVContainer if div.children.isEmpty => "black"
+        case div: HVContainer if div.isHorizontal => "red"
+        case div: HVContainer if !div.isHorizontal => "blue"
+        case _: GridContainer => "green"
+      }
+    } + s"; -fx-stroke-width: ${math.max(0, 4 - depth)};"
     rectangle.fill = container.fill
 
-    val childrenRectangles = container.children flatMap { it => toRectangles(it, withBorderOnly) }
+    if (container.children.isEmpty) {
+      rectangle.userData = "div"
+    }
+
+    val childrenRectangles = container.children flatMap { it => toRectangles(it, withBorderOnly, depth + 1) }
 
     if (!withBorderOnly || (withBorderOnly && container.border)) rectangle +: childrenRectangles
     else childrenRectangles
