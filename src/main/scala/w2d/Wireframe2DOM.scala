@@ -177,7 +177,7 @@ object Wireframe2DOM extends App {
             processed = processed + n
           }
         }
-        val minWidth = if (row) lastRect.origin.x + lastRect.size.x - gridX else sectionLowers(end) - sectionX
+        val minWidth = if (row) lastRect.origin.x + lastRect.size.x - gridX else sectionLowers(end) - gridX
         if (row) {
           sectionWidth = cellWidth * possibleGridSectMap(start).length
           sectionHeight = (possibleGridSectMap(start+n)(0).origin.y - possibleGridSectMap(start)(0).origin.y) * (end + 1 - start) / n
@@ -186,6 +186,7 @@ object Wireframe2DOM extends App {
           sectionWidth = (possibleGridSectMap(start+n)(0).origin.x - possibleGridSectMap(start)(0).origin.x) * (end + 1 - start) / n
           sectionHeight = cellHeight * possibleGridSectMap(start).length
         }
+        println(minWidth)
         grid(sectionWidth, sectionHeight, border = false, top = topMargin, left = leftMargin, minWidth = minWidth)(cellList: _*)
       }
 
