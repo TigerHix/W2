@@ -1,11 +1,15 @@
 package w2d
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths}
+
 import scalafx.scene.paint.Color
 
 object Wireframe2DOM extends App {
   //Examples.DOMVisualizerTest()
-  val depthLimit:Int = 5;
+  val depthLimit: Int = 5;
   val white = Color.White
-  synthesize(Examples.ComplexLayout(), 800, 1200)
+
+  new DOMVisualizer(synthesize(Examples.ComplexLayout(), 800, 1200), 800, 1200).main(Array())
 
   def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
   def rectLowerX(rect: Rect): Int = {rect.origin.x + rect.size.x}
@@ -294,17 +298,41 @@ object Wireframe2DOM extends App {
     
   }
 
-
   def synthesize(rects: Seq[Rect], width: Int, height: Int): Container = {
     val res = synthesizeHV(rects, width, height)
-    val convertedRectangles = DOMVisualizer.toRectangles(res, withBorderOnly = true)
-    print(s"Converted to ${convertedRectangles.length} rectangles:\n")
-    convertedRectangles.foreach { rectangle =>
-      print(s"Rect(Vector2(${rectangle.x.value.toInt}, ${rectangle.y.value.toInt}), Vector2(${rectangle.width.value.toInt}, ${rectangle.height.value.toInt})),\n")
-    }
+//    val convertedRectangles = DOMVisualizer.toRectangles(res, withBorderOnly = true)
+//    print(s"Converted to ${convertedRectangles.length} rectangles:\n")
+//    convertedRectangles.foreach { rectangle =>
+//      print(s"Rect(Vector2(${rectangle.x.value.toInt}, ${rectangle.y.value.toInt}), Vector2(${rectangle.width.value.toInt}, ${rectangle.height.value.toInt})),\n")
+//    }
+    println("=== Result ===")
+    println(res.toString(0))
+    val html = "<html>\n<body>\n" + toHtml(res)(1) + "\n</body>\n</html>"
+    println(html)
+    Files.write(Paths.get("result.html"), html.getBytes(StandardCharsets.UTF_8))
     res
   }
 
+  def toHtml(container: Container)(implicit tabs: Int = 0): String = {
+    var style = ""
+    style += s"width: ${container.size.x}px; "
+    style += s"height: ${container.size.y}px; "
+    style += s"margin: ${container.margin.top}px ${container.margin.right}px ${container.margin.bottom}px ${container.margin.left}px; "
+    if (container.border) style += s"border: 2px solid black; "
+    container.parent match {
+      case hvContainer: HVContainer =>
+        if (hvContainer.isHorizontal) {
+          style += "display: inline-block; "
+        }
+      case gridContainer: GridContainer =>
+
+      case _ =>
+    }
+
+    "\t".repeat(tabs) + "<div style=\"" + style + "\">\n" +
+      container.children.map(it => toHtml(it)(tabs + 1)).mkString("\n") +
+      "\t".repeat(tabs) + "</div>\n"
+  }
 
   // TODO generate divs
 
