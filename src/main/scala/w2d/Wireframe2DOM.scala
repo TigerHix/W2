@@ -8,13 +8,8 @@ object Wireframe2DOM extends App {
   //Examples.DOMVisualizerTest()
   val depthLimit: Int = 5;
   val white = Color.White
-<<<<<<< HEAD
-  println(Examples.ComplexLayout())
-  synthesize(Examples.ComplexLayout(), 800, 1200)
-=======
 
   new DOMVisualizer(synthesize(Examples.ComplexLayout(), 800, 1200), 800, 1200).main(Array())
->>>>>>> 41b5078952f885ff464630424492c6d16f9efabc
 
   def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
   def rectLowerX(rect: Rect): Int = {rect.origin.x + rect.size.x}
@@ -131,12 +126,13 @@ object Wireframe2DOM extends App {
         val cellChildren = childrenHVContainer(rects, cellx, celly, !row)
         hvdiv(cellWidth, cellHeight, white, false, 0, 0, 0, 0)(cellChildren)
       }
-      def generateGrid(start: Int, end: Int, n: Int): Container = {
-        // TODO variable length element of cell need recursion
+      def generateGrid(start: Int, end: Int, n: Int, x: Int, y: Int): Container = {
+        // TODO variable length element of cell need recursion 
         val sectionX = if (row) x else sectionAnchors(start)
         val sectionY = if (row) sectionAnchors(start) else y
         val firstOrigin = possibleGridSectMap(start).head.origin
         val (gridX, gridY) = (firstOrigin.x, firstOrigin.y)
+        val (leftMargin, topMargin) = (gridX - x, gridY - y)
         val sectionWidth = if (row) width else sectionLowers(end) - sectionX
         val sectionHeight = if (row) sectionLowers(end) - sectionY else height
         var cellList = Seq[Container]()
@@ -180,7 +176,7 @@ object Wireframe2DOM extends App {
             processed = processed + n
           }
         }
-        grid(sectionWidth, sectionHeight, border = false)(cellList: _*)
+        grid(sectionWidth, sectionHeight, border = false, top = topMargin, left = leftMargin)(cellList: _*)
       }
 
       var unsuccessfulGrid = Seq[(Int, Seq[Rect])]()
@@ -236,7 +232,9 @@ object Wireframe2DOM extends App {
               val upToSize = sameSize(validSize)._1 + dist - 1
               // now try to form a grid
               (index to upToSize) foreach {case i => addedToGrid(i) = true}
-              gridList = gridList :+ ((index, generateGrid(index, upToSize, dist)))
+              val gridX = if (row) x else sectionAnchors(index)
+              val gridY = if (row) sectionAnchors(index) else y
+              gridList = gridList :+ ((index, generateGrid(index, upToSize, dist, gridX, gridY)))
               // TODO add fail case
               i = upToSize + 1
             } 
