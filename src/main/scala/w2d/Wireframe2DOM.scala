@@ -5,6 +5,7 @@ object Wireframe2DOM extends App {
   //Examples.DOMVisualizerTest()
   val depthLimit:Int = 5;
   val white = Color.White
+  println(Examples.ComplexLayout())
   synthesize(Examples.ComplexLayout(), 800, 1200)
 
   def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
@@ -251,7 +252,8 @@ object Wireframe2DOM extends App {
       }}
       // TODO add the computed children to childrenlist
       childrenList = ((complexSections ++ gridList) sortWith {case ((index1, _), (index2, _)) => index1 < index2}) map {case (_, sect) => sect}
-      val res = hvdiv(width, height, white, false, 0, 0, 0, 0)(childrenList)
+
+      val res = if(childrenList.length == 1) childrenList.head else hvdiv(width, height, white, false, 0, 0, 0, 0)(childrenList)
       println(res.toString(0))
       res
       
