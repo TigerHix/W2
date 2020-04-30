@@ -73,7 +73,8 @@ object Wireframe2DOM extends App {
       null// plainDivs(rects, x, y)
     } else if (rects.length == 1) {
       val rect = rects.head
-      div(rect.size.x, rect.size.y, top = rect.origin.y - y, left = rect.origin.x - x)
+      val childrenDiv = div(rect.size.x, rect.size.y)
+      vdiv(rect.size.x, rect.size.y, top = rect.origin.y - y, left = rect.origin.x - x)(childrenDiv)
     }
     else {
       val sectionizeHV = if (row) sectionizeRow _ else sectionizeCol _
@@ -186,7 +187,6 @@ object Wireframe2DOM extends App {
           sectionWidth = (possibleGridSectMap(start+n)(0).origin.x - possibleGridSectMap(start)(0).origin.x) * (end + 1 - start) / n
           sectionHeight = cellHeight * possibleGridSectMap(start).length
         }
-        println(minWidth)
         grid(sectionWidth, sectionHeight, border = false, top = topMargin, left = leftMargin, minWidth = minWidth)(cellList: _*)
       }
 
