@@ -48,4 +48,5 @@ class HVContainer extends Container {
 }
 
 class GridContainer extends Container {
+  var minWidth: Int = 0
 }

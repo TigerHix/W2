@@ -25,10 +25,11 @@ package object w2d {
     container
   }
 
-  def grid(width: Int, height: Int, fill: Color = Color.White, border: Boolean = true, top: Int = 0, right: Int = 0, bottom: Int = 0, left: Int = 0)(children: Container*): GridContainer = {
+  def grid(width: Int, height: Int, fill: Color = Color.White, border: Boolean = true, top: Int = 0, right: Int = 0, bottom: Int = 0, left: Int = 0, minWidth: Int = 0)(children: Container*): GridContainer = {
     val container = new GridContainer
     container.fill = fill
     container.border = border
+    container.minWidth = minWidth
     container.size = Vector2(width, height)
     container.margin = Vector4(top, right, bottom, left)
     children foreach { it => it.parent = container }
