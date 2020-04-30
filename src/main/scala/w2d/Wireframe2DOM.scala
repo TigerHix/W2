@@ -134,8 +134,8 @@ object Wireframe2DOM extends App {
         val lastRect = possibleGridSectMap(start).last
         val (gridX, gridY) = (firstOrigin.x, firstOrigin.y)
         val (leftMargin, topMargin) = (gridX - x, gridY - y)
-        val sectionWidth = if (row) lastRect.origin.x + lastRect.size.x - gridX  else sectionLowers(end) - sectionX
-        val sectionHeight = if (row) sectionLowers(end) - sectionY else lastRect.origin.y + lastRect.size.y - gridY
+        var sectionWidth = if (row) lastRect.origin.x + lastRect.size.x - gridX  else sectionLowers(end) - sectionX
+        var sectionHeight = if (row) sectionLowers(end) - sectionY else lastRect.origin.y + lastRect.size.y - gridY
         var cellList = Seq[Container]()
         var processed = start
         var (gridWidth, gridHeight) = (0, 0)
@@ -176,6 +176,14 @@ object Wireframe2DOM extends App {
             }
             processed = processed + n
           }
+        }
+        if (row) {
+          sectionWidth = cellWidth * possibleGridSectMap(start).length
+          sectionHeight = (possibleGridSectMap(start+n)(0).origin.y - possibleGridSectMap(start)(0).origin.y) * (end + 1 - start) / n
+        }
+        else {
+          sectionWidth = (possibleGridSectMap(start+n)(0).origin.x - possibleGridSectMap(start)(0).origin.x) * (end + 1 - start) / n
+          sectionHeight = cellHeight * possibleGridSectMap(start).length
         }
         grid(sectionWidth, sectionHeight, border = false, top = topMargin, left = leftMargin )(cellList: _*)
       }
