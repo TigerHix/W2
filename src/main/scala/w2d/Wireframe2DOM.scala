@@ -156,9 +156,9 @@ object Wireframe2DOM extends App {
             } else {
               possibleGridSectMap(start)(1).origin.x - possibleGridSectMap(start)(0).origin.x
             }
-            cellHeight = possibleGridSectMap(start)(n).origin.y - possibleGridSectMap(start)(0).origin.y
+            cellHeight = possibleGridSectMap(start+n)(0).origin.y - possibleGridSectMap(start)(0).origin.y
           } else {
-            cellWidth = possibleGridSectMap(start)(n).origin.x - possibleGridSectMap(start)(0).origin.x
+            cellWidth = possibleGridSectMap(start+n)(0).origin.x - possibleGridSectMap(start)(0).origin.x
             cellHeight = if (possibleGridSectMap(start).length == 1) {
               possibleGridSectMap(start).head.size.y
             } else {
@@ -176,7 +176,7 @@ object Wireframe2DOM extends App {
             processed = processed + n
           }
         }
-        grid(sectionWidth, sectionHeight, border = false, top = topMargin, left = leftMargin)(cellList: _*)
+        grid(sectionWidth, sectionHeight, border = false, top = topMargin, left = leftMargin )(cellList: _*)
       }
 
       var unsuccessfulGrid = Seq[(Int, Seq[Rect])]()
