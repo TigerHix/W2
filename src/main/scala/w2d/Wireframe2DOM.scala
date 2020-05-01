@@ -5,16 +5,32 @@ import java.nio.file.{Files, Paths}
 import scalafx.scene.paint.Color
 
 object Wireframe2DOM extends App {
-  //Examples.DOMVisualizerTest()
+  for (c <- 1 to 100) {
+    println("==========")
+    for ((container, i) <- Examples.examples.view.zipWithIndex) {
+      val rectangles = Examples.toRect(container)
+      println(s"Converted to ${rectangles.length} rectangles:")
+      println(rectangles)
+      val (width, height) = (container.size.x, container.size.y)
+      val synthesized: Container = time(s"Synthesize example $i") {
+        synthesize(rectangles, width, height)
+      }
+      if (synthesized == null) println("草")
+      val html = time(s"Convert example $i to DOM") {
+        toHtml(synthesized, width)
+      }
+      Files.write(Paths.get(s"example$i.html"), html.getBytes(StandardCharsets.UTF_8))
+    }
+  }
+
   val depthLimit: Int = 5;
   val white = Color.White
-  var synthesized = synthesize(Examples.ComplexLayout(), 800, 1200)
 
+  /*var synthesized = synthesize(Examples.ComplexLayout(), 800, 1200)
   new DOMVisualizer(synthesized, 800, 1200)//.main(Array())
-
   val html = toHtml(synthesized, 800, 1200)
   println(html)
-  Files.write(Paths.get("result.html"), html.getBytes(StandardCharsets.UTF_8))
+  Files.write(Paths.get("result.html"), html.getBytes(StandardCharsets.UTF_8))*/
 
   def rectLowerY(rect: Rect): Int = {rect.origin.y + rect.size.y}
   def rectLowerX(rect: Rect): Int = {rect.origin.x + rect.size.x}
@@ -316,23 +332,17 @@ object Wireframe2DOM extends App {
   }
 
   def synthesize(rects: Seq[Rect], width: Int, height: Int): Container = {
-    val res = synthesizeHV(rects, width, height)
-//    val convertedRectangles = DOMVisualizer.toRectangles(res, withBorderOnly = true)
-//    print(s"Converted to ${convertedRectangles.length} rectangles:\n")
-//    convertedRectangles.foreach { rectangle =>
-//      print(s"Rect(Vector2(${rectangle.x.value.toInt}, ${rectangle.y.value.toInt}), Vector2(${rectangle.width.value.toInt}, ${rectangle.height.value.toInt})),\n")
-//    }
-    println("=== Result ===")
-    println(res.toString(0))
-    res
+    val container = synthesizeHV(rects, width, height)
+    print(container.toString(0))
+    container
   }
 
-  def toHtml(container: Container, stageWidth: Int, stageHeight: Int): String = {
+  def toHtml(synthesized: Container, stageWidth: Int): String = {
     val style = s"max-width: ${stageWidth}px; margin: 0 auto; "
-    "<html>\n<body style=\"" + style + "\">\n" + toDiv(synthesized)(800, 1200, 1) + "\n</body>\n</html>"
+    "<html>\n<body style=\"" + style + "\">\n" + toDiv(synthesized)(stageWidth, 1) + "\n</body>\n</html>"
   }
 
-  def toDiv(container: Container)(implicit stageWidth: Int, stageHeight: Int, tabs: Int = 0): String = {
+  def toDiv(container: Container)(implicit stageWidth: Int, tabs: Int = 0): String = {
     var style = ""
     var aux = false
     var auxStyle = ""
@@ -376,7 +386,14 @@ object Wireframe2DOM extends App {
         style += s"margin: ${container.margin.top}px auto ${container.margin.bottom}px auto; "
     }
     // style += s"margin: ${container.margin.top}px ${container.margin.right}px ${container.margin.bottom}px ${container.margin.left}px; "
-    if (container.border) style += s"outline: 2px solid black; outline-offset: -2px;"
+    if (container.border) style += s"outline: 2px solid " + {
+      container match {
+        case div: HVContainer if div.children.isEmpty => "black"
+        case div: HVContainer if div.isHorizontal => "red"
+        case div: HVContainer if !div.isHorizontal => "blue"
+        case _: GridContainer => "green"
+      }
+    } + "; outline-offset: -2px;"
 
     "\t".repeat(tabs) + "<div class=\"" + { container.getClass.getSimpleName } + "\" style=\"" + style + "\">\n" + {
       if (aux)
@@ -384,13 +401,25 @@ object Wireframe2DOM extends App {
       else
         ""
     } +
-      container.children.map(it => toDiv(it)(stageWidth, stageHeight, tabs + (if (aux) 2 else 1))).mkString("\n") + {
+      container.children.map(it => toDiv(it)(stageWidth, tabs + (if (aux) 2 else 1))).mkString("\n") + {
       if (aux)
         "\n" + "\t".repeat(tabs + 1) + "</div>\n"
       else
         ""
     } +
     "\t".repeat(tabs) + "</div>\n"
+  }
+
+  /**
+   * Credits: https://stackoverflow.com/a/9160068/2706176
+   */
+  def time[R](label: String)(block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block
+    val t1 = System.nanoTime()
+    val diff = t1 - t0
+    println(s"$label: " + diff + "ns = " + (diff / 1000000) + "ms")
+    result
   }
 
 }
