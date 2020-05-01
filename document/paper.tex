@@ -5,6 +5,8 @@
 \documentclass[runningheads]{llncs}
 %
 \usepackage{graphicx}
+\usepackage{wrapfig}
+
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
 %
@@ -56,15 +58,29 @@ Our work focuses on configure the relationship between each atom elements in the
 
 \section{Illustrative example}
 % Shangyin
-\section{Background}
-% Shangyin
 \section{Formal problem definition}
 % Shangyin
-\section{Algorithm}
+In program synthesis setting, 
+\section{Preliminaries}
 % Shangyin
 \subsection{Workflow}
-Static Graph (the absolute location of each component) $=>$ relative intermediate representation $=>$HTML
-\subsection{Grammar}
+\begin{wrapfigure}{r}{0.25\textwidth}
+  \vspace*{-0.5in}
+  \includegraphics[width=0.25\textwidth]{src/workflow.JPG}
+\end{wrapfigure}
+We define our workflow as a two-staged program. In the first stage, we synthesize the input Wireframe rectangles to IR. Then IR is compiled into universal HTML compatible with any browser in the second stage. 
+
+
+\subsection{IR Definition}
+
+\section{Algorithm}
+% Shangyin
+In this section, we explain the procedures we used synthesizing the list of rectangles to IR with an estimate order of time complexity. We also present the compilation process from IR to final HTML result.
+\subsection{IR Synthesis}
+Recall that the input is a list of rectangles. This is the starting point of the synthesis, and we target the nested hierarchical IR. 
+\subsubsection{Cut}
+
+
 \subsubsection{Input}
 RECT\\
 RECTLIST:= RECTLIST RECT | Nil
