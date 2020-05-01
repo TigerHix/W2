@@ -4,9 +4,15 @@ import java.nio.file.{Files, Paths}
 
 import scalafx.scene.paint.Color
 
+import scala.collection.immutable.ArraySeq
+
 object Wireframe2DOM extends App {
+  val depthLimit: Int = 5;
+  val white = Color.White
+
   for (c <- 1 to 100) {
     println("==========")
+
     for ((container, i) <- Examples.examples.view.zipWithIndex) {
       val rectangles = Examples.toRect(container)
       println(s"Converted to ${rectangles.length} rectangles:")
@@ -22,9 +28,6 @@ object Wireframe2DOM extends App {
       Files.write(Paths.get(s"example$i.html"), html.getBytes(StandardCharsets.UTF_8))
     }
   }
-
-  val depthLimit: Int = 5;
-  val white = Color.White
 
   /*var synthesized = synthesize(Examples.ComplexLayout(), 800, 1200)
   new DOMVisualizer(synthesized, 800, 1200)//.main(Array())
