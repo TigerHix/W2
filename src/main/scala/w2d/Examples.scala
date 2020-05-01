@@ -22,26 +22,17 @@ object Examples {
       div(100, 580, top = 10, bottom = 10, left = 20, right = 20)
     ),
     // Example 3
-    vdiv(800, 1000, border = false)(
+    vdiv(800, 1020, border = false)(
       component1()
     ),
     // Example 4
-    vdiv(800, 10000, border = false)(
-      component1(),
-      component1(),
-      component1(),
-      component1(),
-      component1(),
-      component1(),
-      component1(),
-      component1(),
-      component1(),
-      component1(),
+    vdiv(800, 10200, border = false)(
+      component2()
     )
   )
 
   def component1(): Container = {
-    vdiv(800, 1000, border = false)(
+    vdiv(800, 1000, border = false, top = 10, bottom = 10)(
       hdiv(800, 50, border = false)(
         div(160, 30, left = 20, right = 20, top = 10),
         div(260, 30, left = 20, right = 20, top = 10),
@@ -51,6 +42,255 @@ object Examples {
       div(400, 20, left = 200, top = 30),
       vdiv(800, 400, border = false)(
         grid(600, 400, left = 100, border = false, top = 20)(
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+        )
+      ),
+      div(780, 30, left = 10, right = 10, top = 10),
+      vdiv(800, 200, border = false)(
+        grid(720, 180, top = 10, left = 40, border = false)(
+          div(160, 160, top = 10, bottom = 10, left = 10, right = 10),
+          div(160, 160, top = 10, bottom = 10, left = 10, right = 10),
+          div(160, 160, top = 10, bottom = 10, left = 10, right = 10),
+          div(160, 160, top = 10, bottom = 10, left = 10, right = 10)
+        )
+      ),
+      hdiv(800, 100, border = false)(
+        div(440, 100, left = 30, right = 10),
+        hdiv(300, 100, border = false)(
+          div(80, 80, top = 10, bottom = 10, left = 10, right = 10),
+          div(80, 80, top = 10, bottom = 10, left = 10, right = 10),
+          div(80, 80, top = 10, bottom = 10, left = 10, right = 10)
+        )
+      )
+    )
+  }
+
+  def component2(): Container = {
+    vdiv(800, 1000, border = false, top = 10, bottom = 10)(
+      hdiv(800, 50, border = false)(
+        div(160, 30, left = 20, right = 20, top = 10),
+        div(260, 30, left = 20, right = 20, top = 10),
+        div(260, 30, left = 20, right = 20, top = 10)
+      ),
+      div(800, 140),
+      div(400, 20, left = 200, top = 30),
+      vdiv(800, 400, border = false)(
+        grid(600, 400, left = 100, border = false, top = 20)(
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
+          vdiv(150, 180, border = false)(
+            div(140, 145, top = 5, left = 5, bottom = 5),
+            div(140, 20, left = 5, bottom = 5)
+          ),
           vdiv(150, 180, border = false)(
             div(140, 145, top = 5, left = 5, bottom = 5),
             div(140, 20, left = 5, bottom = 5)
