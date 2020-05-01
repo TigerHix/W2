@@ -12,6 +12,7 @@ class WireframeVisualizer(rects: Seq[Rect], stageWidth: Int, stageHeight: Int) e
     title = "Wireframe Visualizer"
     scene = new Scene {
       root = new Pane {
+        padding = Insets(0)
         children = {
           val root = Rectangle(0, 0, stageWidth, stageHeight)
           root.style = "-fx-fill: white; -fx-stroke: red; -fx-stroke-width: 1;"

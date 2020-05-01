@@ -8,9 +8,8 @@ package object w2d {
     container.border = border
     container.size = Vector2(width, height)
     container.margin = Vector4(top, right, bottom, left)
-    val nonNullChildren = children.filter(it => it != null)
-    nonNullChildren foreach { it => it.parent = container }
-    container.children = nonNullChildren
+    children foreach { it => it.parent = container }
+    container.children = children
     container
   }
 
@@ -21,9 +20,8 @@ package object w2d {
     container.border = border
     container.size = Vector2(width, height)
     container.margin = Vector4(top, right, bottom, left)
-    val nonNullChildren = children.filter(it => it != null)
-    nonNullChildren foreach { it => it.parent = container }
-    container.children = nonNullChildren
+    children foreach { it => it.parent = container }
+    container.children = children
     container
   }
 
@@ -34,9 +32,8 @@ package object w2d {
     container.minWidth = minWidth
     container.size = Vector2(width, height)
     container.margin = Vector4(top, right, bottom, left)
-    val nonNullChildren = children.filter(it => it != null)
-    nonNullChildren foreach { it => it.parent = container }
-    container.children = nonNullChildren
+    children foreach { it => it.parent = container }
+    container.children = children
     container
   }
 
