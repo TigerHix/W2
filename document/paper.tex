@@ -131,7 +131,13 @@ Tiger Tang\printfnsymbol{1}}
 \section{Introduction}
 UI/UX design plays an important role in most software applications. It allows software users to interact with the software functions and perform the designated tasks in an intuitive and effective way. The usual client application development cycle is as below: the UI/UX designer first designs the application layout, then provides it in image format to the application developer, who then writes code that when rendered resembles the design. However, the latter task is often time-consuming and error-prone. For instance, the spacings between the layout elements, referred to as margins, are often not accurately implemented by the application programmer, either because they are not explicitly stated in the design or such process simply takes too much time, so that the programmer uses estimated values instead.
 
-Furthermore, as the popularity of mobile devices grows, a single fixed layout is no longer sufficient. In the context of web application development, most websites today use a responsive layout, which refers to a flexible, fluid layout that resizes itself to fit the size of the viewer's display. For instance, consider the layout of YouTube (Figure 1a and 1b), a popular video website. When the viewer is using a desktop computer whose resolution width is higher than a threshold in pixels, the website shows the videos in 4 columns; when the viewer is using a mobile device with a much smaller width in pixels, however, the website shows the videos in 2 columns. To achieve this result, both the UI/UX designer and the application programmer have to do extra amount of work: the UI/UX designer must design multiple versions of the layout in different screen sizes, and the application programmer must write code that incorporates these layouts such that it renders correctly across all supported screen sizes. Specifically, the application programmer has to work out the parent-child relationships between the elements, known as the layout hierarchy. Unfortunately, this task is also time-consuming and error-prone, as the layout relationships are not immediately clear. For example, Figure 2 shows a simplified layout hierarchy of YouTube when rendered on a mobile device, in which the innermost element has a depth of 5. Along with even more complicated margins, this task poses a considerable challenge to the application programmer.
+Furthermore, as the popularity of mobile devices grows, a single fixed layout is no longer sufficient. In the context of web application development, most websites today use a responsive layout, which refers to a flexible, fluid layout that resizes itself to fit the size of the viewer's display. For instance, consider the layout of YouTube [Figure 1], a popular video website.
+\begin{figure}[H]
+  \vspace*{-0.1in}
+  \includegraphics[width=1\textwidth]{src/youtube.JPG}
+  \caption{Difference in Youtube Layout}
+\end{figure}
+When the viewer is using a desktop computer whose resolution width is higher than a threshold in pixels, the website shows the videos in 4 columns; when the viewer is using a mobile device with a much smaller width in pixels, however, the website shows the videos in 2 columns. To achieve this result, both the UI/UX designer and the application programmer have to do extra amount of work: the UI/UX designer must design multiple versions of the layout in different screen sizes, and the application programmer must write code that incorporates these layouts such that it renders correctly across all supported screen sizes. Specifically, the application programmer has to work out the parent-child relationships between the elements, known as the layout hierarchy. Unfortunately, this task is also time-consuming and error-prone, as the layout relationships are not immediately clear. For example, Figure 2 shows a simplified layout hierarchy of YouTube when rendered on a mobile device, in which the innermost element has a depth of 5. Along with even more complicated margins, this task poses a considerable challenge to the application programmer.
 \paragraph{Our Work} In this paper, we present a proof-of-concept framework, named \W (Synthesizing responsive Webpage from Wireframe), to address the stated challenges. Specifically, we present the following technical contributions:
 \W introduces a fast sectionalization algorithm to synthesize any absolute layout with hundreds of elements, specified by their absolute screen coordinates (x and y) and sizes (width and height), into a nested layout with hierarchical information inferred under a few milliseconds.
 \W introduces a direct mapping of nested layouts to an HTML DOM (Document Object Model), exploiting the latest HTML5 features: flexboxes and grids. The resulting HTML can be rendered by any modern browser on its compatible devices.
@@ -145,13 +151,18 @@ There is also work on generating UI layout for alternative screen orientation [Z
 % Tiger
 
 \section{Illustrative example}
-There is a significant difference in mobile website and desktop website layout due to various screen width between end-devices. 
+When the wireframe is designed, we are given a static layout graph [Figure 2].
 \begin{figure}[H]
   \vspace*{-0.1in}
-  %\includegraphics[width=1\textwidth]{src/youtube.JPG}
-  \caption{Different Rendering in Mobile and PC}
+  \includegraphics[width=0.5\textwidth]{src/compare.JPG}
+  \caption{Static Wireframe Graph}
 \end{figure}
-The above shows an example of different rendering of the same website. When the UI/UX designer design a static wireframe layout, it only applies to one specific layout without generality. Our work takes the advantage of the responsiveness of HTML components and infer the HTML's hierarchical structure from the given static wireframe. 
+We aim to transform this static layout to HTML script can directly run in browser. With our inference of the hierarchical structure, the website rendered by HTML can adjust and adapt to various width [Figure 3]
+\begin{figure}[H]
+  \vspace*{-0.1in}
+  \includegraphics[width=1\textwidth]{src/compare.JPG}
+  \caption{Responsive in Different Width}
+\end{figure}
 
 \section{Formal problem definition}
 % Shangyin
