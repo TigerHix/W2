@@ -134,7 +134,7 @@ UI/UX design plays an important role in most software applications. It allows so
 Furthermore, as the popularity of mobile devices grows, a single fixed layout is no longer sufficient. In the context of web application development, most websites today use a responsive layout, which refers to a flexible, fluid layout that resizes itself to fit the size of the viewer's display. For instance, consider the layout of YouTube [Figure 1], a popular video website.
 \begin{figure}[H]
   \vspace*{-0.1in}
-  \includegraphics[width=1\textwidth]{src/youtube.JPG}
+  \includegraphics[width=1\textwidth]{src/youtube.jpg}
   \caption{Difference in Youtube Layout}
 \end{figure}
 When the viewer is using a desktop computer whose resolution width is higher than a threshold in pixels, the website shows the videos in 4 columns; when the viewer is using a mobile device with a much smaller width in pixels, however, the website shows the videos in 2 columns. To achieve this result, both the UI/UX designer and the application programmer have to do extra amount of work: the UI/UX designer must design multiple versions of the layout in different screen sizes, and the application programmer must write code that incorporates these layouts such that it renders correctly across all supported screen sizes. Specifically, the application programmer has to work out the parent-child relationships between the elements, known as the layout hierarchy. Unfortunately, this task is also time-consuming and error-prone, as the layout relationships are not immediately clear. For example, Figure 2 shows a simplified layout hierarchy of YouTube when rendered on a mobile device, in which the innermost element has a depth of 5. Along with even more complicated margins, this task poses a considerable challenge to the application programmer.
@@ -154,13 +154,13 @@ There is also work on generating UI layout for alternative screen orientation [Z
 When the wireframe is designed, we are given a static layout graph [Figure 2].
 \begin{figure}[H]
   \vspace*{-0.1in}
-  \includegraphics[width=0.5\textwidth]{src/compare.JPG}
+  \includegraphics[width=0.5\textwidth]{src/wireframe.JPG}
   \caption{Static Wireframe Graph}
 \end{figure}
-We aim to transform this static layout to HTML script can directly run in browser. With our inference of the hierarchical structure, the website rendered by HTML can adjust and adapt to various width [Figure 3]
+We aim to transform this static layout to HTML script can directly run in browser. With the inference of the hierarchical structure by \textbf{W}$^2$, the website generated can adjust and adapt to various width [Figure 3]
 \begin{figure}[H]
   \vspace*{-0.1in}
-  \includegraphics[width=1\textwidth]{src/compare.JPG}
+  \includegraphics[width=1\textwidth]{src/compare.jpg}
   \caption{Responsive in Different Width}
 \end{figure}
 
@@ -272,7 +272,22 @@ There are rare cases where the hierarchy tree produced fail to be optimal layout
 
 
 \section{Evaluation}
-% Tiger
+We ran \W on a small set of representative test cases (|s|=5). Test case 1 to 3 are simple layouts; test case 4 is a design that is close to that in a real-world scenario (most rectangles are irregularly aligned, multiple layers of depth), and test case 5 is for stress testing (> 200 rectangles). The results are as below:
+\begin{figure}[H]
+  \vspace*{-0.1in}
+  \includegraphics[width=1\textwidth]{src/benchmark.JPG}
+  \caption{Benchmark}
+\end{figure}
+As our algorithm has a very limited search space and most UI layouts have fewer than 100 elements, it runs extremely fast—much faster than most similar work. Also, unlike neural-network based methods that often generate code that is non-interpretable or syntactically incorrect, \W produces a clean and robust DOM tree that is ready for display in the browser and easy to modify.
+
+However, there are some limitations with \textbf{W}$^2$. For example, for a layout shown in Figure X, there exists two possible ways to sectionalize the layout, and \W always chooses the latter, due to its nature of returning the hierarchical tree of maximized depth. In the practical sense, though, the former sectionalization is more common as most websites adapt a multi-column layout. We have yet to clearly define a user-customizable parameter to measure the optimality of our synthesized hierarchy; hence, the resulting layout may not match the user's intent.
+\begin{figure}[H]
+  \vspace*{-0.1in}
+  \includegraphics[width=1\textwidth]{src/limit.JPG}
+  \caption{Benchmark}
+\end{figure}
+
+
 \section{Conclusion}
 % Tiger
 
