@@ -164,15 +164,16 @@ As discussed before, the intermediate presentation captures the nested hierarchy
 \vspace*{-0.2in}
 \begin{lstlisting}[language=Scala,mathescape=true]
 size = <Int, Int>
+margin = <Int, Int, Int, Int>
 Div = <size>
-HDiv = <size, VDiv*, Grid*, Div*>
-VDiv = <size, HDiv*, Grid*, Div*>
-Grid = <size, VDiv*, HDiv*, Div*>
+HDiv = <size, margin, VDiv*, Grid*, Div*>
+VDiv = <size, margin, HDiv*, Grid*, Div*>
+Grid = <size, margin, VDiv*, HDiv*, Div*>
 Layout = Div | Grid | VDiv | HDiv
 \end{lstlisting}
 \caption{Definition of IR}
 \end{figure}
-We define \lstinline|Div| to be basic component of the hierarchy, which is equivalent to a raw rectangle in the input. All solid input rectangles are transformed into \lstinline|Div|s in different level of the tree in separate time during synthesizing. The three virtual containers for hierarchy are   \lstinline|HDiv|, \lstinline|VDiv|, \lstinline|GDiv|. As the name suggests, child containers of \lstinline|HDiv| and \lstinline|VDiv| are rendered in horizontal and vertical direction respectively. We define \lstinline|Grid| to behave like an HTML grid: two-dimensional container with auto row-wrapping. It contains homogenous elements, all rendered with same margin. 
+We define \lstinline|Div| to be basic component of the hierarchy, which is equivalent to a raw rectangle in the input. All solid input rectangles are transformed into \lstinline|Div|s in different level of the tree in separate time during synthesizing. The three virtual containers for hierarchy are   \lstinline|HDiv|, \lstinline|VDiv|, \lstinline|GDiv|. As the name suggests, child containers of \lstinline|HDiv| and \lstinline|VDiv| are rendered in horizontal and vertical direction respectively. We define \lstinline|Grid| to behave like an HTML grid: two-dimensional container with auto row-wrapping. It contains homogenous elements, all rendered with same margin.
 
 
 \section{Algorithm}
@@ -180,19 +181,58 @@ We define \lstinline|Div| to be basic component of the hierarchy, which is equiv
 In this section, we explain the procedures we used synthesizing the list of rectangles to IR with an estimate order of time complexity. We also present the compilation process from IR to final HTML result.
 \subsection{IR Synthesis}
 Recall that the input is a list of rectangles. This is the starting point of the synthesis, and we target the nested hierarchical IR. 
-\subsubsection{Cut}
 
+\subsubsection{Sectionalize} 
+\begin{definition}{\lstinline{section}}
+  We define a \lstinline{section} to be a set of rectangles which bounded by an inclusive lower bound $B_{low}$ and an inclusive upper bound $B_{up}$ in either $x$-direction or $y$-direction. In range $[B_{low}, B_{up}]$, we cannot find another bound $B_{mid}$ such that either $[B_{mid}, B_{up}]$ or $[B_{low}, B_{mid}]$ can form a \lstinline{section}.
+\end{definition}
 
-\subsubsection{Input}
-RECT\\
-RECTLIST:= RECTLIST RECT | Nil
-\subsubsection{IR}
-DIV\\
-HDIV:= HDIV|DIV|VDIV\\
-VDIV:= HDIV|DIV|VDIV\\
-First we divide the rectangles into section based on their $y$-axis. Then we use
-greedy to find the earliest possible cut $y$ such that this $y$ does not divide any
-other rects.
+Given the list of rectangles, we divide such list into different \lstinline{section}s. To optimize the future operations, we want to find the max number of \lstinline{section}s. We propose the following sectionalize method.
+
+\begin{figure}[H]
+  \vspace*{-0.4in}
+  \begin{lstlisting}[language=Scala,mathescape=true]
+
+/*
+Input - a list $L$ of rectangle
+Output - a list $S$ of section
+*/
+
+sectionalize($L$: List[Rectangle]): List[section] = {
+  val upperBounds = $L$.map(rectangles => rectangles.getUpperBound())
+  val sectionBounds = upperBounds.filter(
+    line => doesNotCutOtherRectangle(line))
+  var $S$ = List()
+  for (sectionLine <- sectionBounds) {
+    $S$ = S + getRectangleBetween(sectionLine, lastSectionLine)
+  }
+  return $S$ 
+}
+  \end{lstlisting}
+\caption{Sectionalize}
+\end{figure}
+In the above method, we first filter all upper-bounds of rectangles that does not go through other rectangles. Then, we argue that these lines are the bounds of that maximize the number of \lstinline{section}s. The proof is trivial and omitted. In each \lstinline{section}, we iterate through list $L$ and find all rectangles belong to this \lstinline{section}. Note that no specified direction is used in the above method, so it applies to both horizontal and vertical direction: we can sectionalize $L$ based on $x$ or $y$ coordinate.
+
+Note that every \lstinline{section} can be easily converted into a \lstinline{VDiv} or \lstinline{HDiv}. We calculate the margin of each child rectangle of the \lstinline{section} by calculating the difference between that rectangle's coordinate and \lstinline{section} origin, which can be obtained by finding intersection of $B_{low}$ and outer coordinate.
+
+Before the sectionalize operation, every rectangle is in the same level and container: every individual rectangle will be rendered with same priority and order. After we sectionalize a set of rectangles, we increase the depth of the hierarchy tree by $1$. Now each rectangle must belong to one \lstinline{section}. If we view each \lstinline{section} as an individual component, there will be another virtual \textit{master} container that contains all the \lstinline{section}s, which is visualized in the following graph,
+
+\subsubsection{FormGrid} The central part of forming and optimizing the hierarchy relation is to identify \lstinline{Grid} from \lstinline{section}s. We see that in the previous sectionalize method, we generate a suboptimized hierarchical strucuture as we can put every rectangle into different \lstinline{VDiv} and \lstinline{HDiv} after sectionalizing. To further optimize the previous result, we want to merge different \lstinline{section}s into one \lstinline{Grid}.
+
+For every \lstinline{section}, we classify the \lstinline{section} into \textit{simple} and \textit{complex} lists. We define \textit{simple} \lstinline{section} to be the section that contains only similar rectangles and are able to form \lstinline{Grid}. \textit{complex} \lstinline{section} is cannot merge with other \lstinline{section} to form \lstinline{Grid} but can contain \lstinline{Grid}. 
+
+Then we iterate through the list of \lstinline{section}s and enumerates all possible of combination of \lstinline{section}s. We group larger \lstinline{Grid} first and then process smaller ones. For the \lstinline{section} fail to merge with other \lstinline{section}, we put them into the \textit{complex} \lstinline{section} for future processing.
+
+% \subsubsection{Input}
+% RECT\\
+% RECTLIST:= RECTLIST RECT | Nil
+% \subsubsection{IR}
+% DIV\\
+% HDIV:= HDIV|DIV|VDIV\\
+% VDIV:= HDIV|DIV|VDIV\\
+% First we divide the rectangles into section based on their $y$-axis. Then we use
+% greedy to find the earliest possible cut $y$ such that this $y$ does not divide any
+% other rects.
 
 
 \section{Evaluation}
