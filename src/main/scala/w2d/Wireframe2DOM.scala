@@ -16,12 +16,11 @@ object Wireframe2DOM extends App {
     for ((container, i) <- Examples.examples.view.zipWithIndex) {
       val rectangles = Examples.toRect(container)
       println(s"Converted to ${rectangles.length} rectangles:")
-      println(rectangles)
+      //println(rectangles)
       val (width, height) = (container.size.x, container.size.y)
       val synthesized: Container = time(s"Synthesize example $i") {
         synthesize(rectangles, width, height)
       }
-      if (synthesized == null) println("草")
       val html = time(s"Convert example $i to DOM") {
         toHtml(synthesized, width)
       }
@@ -336,7 +335,7 @@ object Wireframe2DOM extends App {
 
   def synthesize(rects: Seq[Rect], width: Int, height: Int): Container = {
     val container = synthesizeHV(rects, width, height)
-    print(container.toString(0))
+    //print(container.toString(0))
     container
   }
 
