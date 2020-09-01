@@ -1,1 +1,1 @@
-# W2 - HTML Syntehsizer
+# W2 - HTML Synthesizer
